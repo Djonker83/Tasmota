@@ -70,5 +70,11 @@
         "tooltip": "PlatformIO: Rebuild IntelliSense Index",
         "commands": "platformio-ide.rebuildProjectIndex"
       }
-    ]
+    ],
+    "idf.portWin": "COM6",
+    "idf.adapterTargetName": "esp32",
+    "idf.openOcdConfigs": [
+      "board/esp32-wrover-kit-3.3v.cfg"
+    ],
+    "cmake.sourceDirectory": "D:/repositories/Tasmota/tasmota"
   }
