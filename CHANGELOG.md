@@ -3,7 +3,31 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - Development
 
-## [14.3.0.2]
+## [14.3.0.4] 
+### Added
+- DALI command `DaliGroupSliders 0..16` to show GUI group sliders with feedback disabling `DaliLight`
+
+### Breaking Changed
+
+### Changed
+
+### Fixed
+
+### Removed
+
+## [14.3.0.3] 20241031
+### Added
+- Support for I2C over Serial, preliminary stub (#22388)
+
+### Changed
+- ESP32 Platform from 2024.10.30 to 2024.11.30, Framework (Arduino Core) from v3.1.0.241023 to v3.1.0.241030 and IDF to 5.3.1.241024 (#22384)
+- ESP32 LVGL library from v9.2.0 to v9.2.2 (#22385)
+- Refactored `i2c_enabled` as array (#22387)
+
+### Fixed
+- ESP32 Arduino Core IPv6 zones used by Matter (#22378)
+
+## [14.3.0.2] 20241030
 ### Added
 - DALI command `DaliGear` to set max found gear to speed up scan response
 - DALI command `DaliGroup` to add gear to groups
@@ -18,8 +42,8 @@ All notable changes to this project will be documented in this file.
 - Support for US AQI and EPA AQI in PMS5003x sensors (#22294)
 - HLK-LD2410 Engineering mode (#21880)
 - Support for HLK-LD2410S 24GHz smart wave motion sensor (#22253)
-
-### Breaking Changed
+- Mitsubishi Electric HVAC Auto Clear Remote Temp for MiElHVAC (#22370)
+- Command ``SetOption161 1`` to disable web page slider updates by commands
 
 ### Changed
 - DALI renamed commands `DaliCommission` to `DaliScan` and `DaliWeb` to `DaliLight`
@@ -28,6 +52,8 @@ All notable changes to this project will be documented in this file.
 - Shutter optimized behavior to publish shutter data with sensor request (#22353)
 
 ### Fixed
+- Ethernet on -DFRAMEWORK_ARDUINO_ITEAD framework regression from v14.3.0 (#22367)
+- Alexa Hue with multiple devices (#22383)
 
 ### Removed
 - DALI inverted signal configuration using compile time defines

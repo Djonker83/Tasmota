@@ -114,20 +114,24 @@ The latter links can be used for OTA upgrades too like ``OtaUrl https://ota.tasm
 
 [Complete list](BUILDS.md) of available feature and sensors.
 
-## Changelog v14.3.0.2
+## Changelog v14.3.0.4
 ### Added
+- Command ``SetOption161 1`` to disable web page slider updates by commands
 - DALI support for short addresses (gear) and groups
 - DALI command `DaliGear` to set max found gear to speed up scan response
 - DALI command `DaliGroup` to add gear to groups
 - DALI command `DaliTarget` to set light control broadcast, group number or gear number
+- DALI command `DaliGroupSliders 0..16` to show GUI group sliders with feedback disabling `DaliLight`
 - DALI inverted signal configuration using GPIO DALI RX_i/TX_i
-- Support for Shelly DALI Dimmer Gen3 (See tips and template in file xdrv_75_dali.ino)
+- Support for I2C over Serial, preliminary stub [#22388](https://github.com/arendst/Tasmota/issues/22388)
+- Support for Shelly DALI Dimmer Gen3
 - Support for HLK-LD2410S 24GHz smart wave motion sensor [#22253](https://github.com/arendst/Tasmota/issues/22253)
 - Support for US AQI and EPA AQI in PMS5003x sensors [#22294](https://github.com/arendst/Tasmota/issues/22294)
 - HLK-LD2410 Engineering mode [#21880](https://github.com/arendst/Tasmota/issues/21880)
 - Mitsubishi Electric HVAC Operation time for MiElHVAC [#22334](https://github.com/arendst/Tasmota/issues/22334)
 - Mitsubishi Electric HVAC Outdoor Temperature for MiElHVAC [#22345](https://github.com/arendst/Tasmota/issues/22345)
 - Mitsubishi Electric HVAC Compressor Frequency for MiElHVAC [#22347](https://github.com/arendst/Tasmota/issues/22347)
+- Mitsubishi Electric HVAC Auto Clear Remote Temp for MiElHVAC [#22370](https://github.com/arendst/Tasmota/issues/22370)
 - SolaxX1 Meter mode [#22330](https://github.com/arendst/Tasmota/issues/22330)
 - BLE track devices with RPA [#22300](https://github.com/arendst/Tasmota/issues/22300)
 - HASPmota `haspmota.get_pages()` to get the sorted list of pages [#22358](https://github.com/arendst/Tasmota/issues/22358)
@@ -135,13 +139,18 @@ The latter links can be used for OTA upgrades too like ``OtaUrl https://ota.tasm
 ### Breaking Changed
 
 ### Changed
-- ESP32 platform update from 2024.09.30 to 2024.10.30 and Framework (Arduino Core) from v3.1.0.240926 to v3.1.0.241023 [#22351](https://github.com/arendst/Tasmota/issues/22351)
+- ESP32 Platform from 2024.09.30 to 2024.11.30, Framework (Arduino Core) from v3.1.0.240926 to v3.1.0.241030 and IDF to 5.3.1.241024 [#22384](https://github.com/arendst/Tasmota/issues/22384)
+- ESP32 LVGL library from v9.2.0 to v9.2.2 [#22385](https://github.com/arendst/Tasmota/issues/22385)
+- Refactored `i2c_enabled` as array [#22387](https://github.com/arendst/Tasmota/issues/22387)
 - DALI renamed commands `DaliCommission` to `DaliScan` and `DaliWeb` to `DaliLight`
 - DALI set Tasmota light control as default
 - Shutter optimized behavior to publish shutter data with sensor request [#22353](https://github.com/arendst/Tasmota/issues/22353)
 - HASPmota support for page delete and object updates [#22311](https://github.com/arendst/Tasmota/issues/22311)
 
 ### Fixed
+- Alexa Hue with multiple devices [#22383](https://github.com/arendst/Tasmota/issues/22383)
 - EQ3 TRV firmware version 1.46 fails if the default true is used in subscribe on the notify characteristic [#22328](https://github.com/arendst/Tasmota/issues/22328)
+- Ethernet on -DFRAMEWORK_ARDUINO_ITEAD framework regression from v14.3.0 [#22367](https://github.com/arendst/Tasmota/issues/22367)
+- ESP32 Arduino Core IPv6 zones used by Matter [#22378](https://github.com/arendst/Tasmota/issues/22378)
 
 ### Removed
