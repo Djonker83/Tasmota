@@ -54,12 +54,6 @@ int32_t  current_real_position = 0;
 int32_t  current_pwm_velocity = 0;
 bool     sensor_data_reported = false;
 
-const char HTTP_MSG_SLIDER_SHUTTER[] PROGMEM =
-  "<tr><td colspan=2>"
-  "<div><span class='p'>%s</span><span class='q'>%s</span></div>"
-  "<div><input type='range' min='0' max='100' value='%d' onchange='lc(\"u\",%d,value)'></div>"
-  "{e}";
-
 const uint8_t MAX_MODES = 8;
 enum Shutterposition_mode {SHT_UNDEF, SHT_TIME, SHT_TIME_UP_DOWN, SHT_TIME_GARAGE, SHT_COUNTER, SHT_PWM_VALUE, SHT_PWM_TIME,SHT_AUTOCONFIG};
 enum Shutterswitch_mode {SHT_SWITCH, SHT_PULSE,};
@@ -1142,13 +1136,6 @@ void ShutterToggle(bool dir)
   }
 }
 
-void ShutterShow(){
-  for (uint32_t i = 0; i < TasmotaGlobal.shutters_present; i++) {
-    WSContentSend_P(HTTP_MSG_SLIDER_SHUTTER,  (Settings->shutter_options[i] & 1) ? D_OPEN : D_CLOSE,(Settings->shutter_options[i] & 1) ? D_CLOSE : D_OPEN, (Settings->shutter_options[i] & 1) ? (100 - ShutterRealToPercentPosition(-9999, i)) : ShutterRealToPercentPosition(-9999, i), i+1);
-    WSContentSeparator(3); // Don't print separator on next WSContentSeparator(1)
-  }
-}
-
 /*********************************************************************************************\
  * Commands
 \*********************************************************************************************/
@@ -1899,6 +1886,7 @@ bool Xdrv27(uint32_t function)
   if (Settings->flag3.shutter_mode) {  // SetOption80 - Enable shutter support
     uint8_t  counter = XdrvMailbox.index==0?1:XdrvMailbox.index;
     uint8_t  counterend = XdrvMailbox.index==0?TasmotaGlobal.shutters_present:XdrvMailbox.index;
+    uint32_t rescue_index    = XdrvMailbox.index;
     int32_t  rescue_payload  = XdrvMailbox.payload;
     uint32_t rescue_data_len = XdrvMailbox.data_len;
     char stemp1[10];
@@ -1915,13 +1903,6 @@ bool Xdrv27(uint32_t function)
         ShutterReportPosition(false, MAX_SHUTTERS);
         break;
       case FUNC_COMMAND:
-        for (uint8_t i = counter; i <= counterend; i++) {
-          XdrvMailbox.index = i;
-          XdrvMailbox.payload = rescue_payload;
-          XdrvMailbox.data_len = rescue_data_len;
-          result = DecodeCommand(kShutterCommands, ShutterCommand);
-        }
-        break;
         for (uint8_t i = counter; i <= counterend; i++) {
           XdrvMailbox.index = i;
           XdrvMailbox.payload = rescue_payload;
@@ -1982,15 +1963,13 @@ bool Xdrv27(uint32_t function)
           result = true;
         }
       break;
-#ifdef USE_WEBSERVER
-      case FUNC_WEB_SENSOR:
-        ShutterShow();
-        break;
-#endif  // USE_WEBSERVER
       case FUNC_ACTIVE:
         result = true;
         break;
     }
+    XdrvMailbox.index = rescue_index;
+    XdrvMailbox.payload = rescue_payload;
+    XdrvMailbox.data_len = rescue_data_len;
   }
   return result;
 }

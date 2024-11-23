@@ -215,6 +215,7 @@
 #define D_WEB_SERVER "Уеб сървър"
 #define D_SOC "Съснояние на зареждане"
 #define D_SOH "State of Health"
+#define D_WATER_DEPTH "Дълбочина на водата"
 
 // tasmota.ino
 #define D_WARNING_MINIMAL_VERSION "ПРЕДУПРЕЖДЕНИЕ Тази версия не поддържа постоянни настройки"
@@ -787,6 +788,8 @@
 #define D_SENSOR_TM1638_CLK    "TM1638 CLK"
 #define D_SENSOR_TM1638_DIO    "TM1638 DIO"
 #define D_SENSOR_TM1638_STB    "TM1638 STB"
+#define D_SENSOR_TM1640_CLK    "TM1640 CLK"
+#define D_SENSOR_TM1640_DIN    "TM1640 DIN"
 #define D_SENSOR_MAX7219_DIN    "MAX7219 DIN"
 #define D_SENSOR_MAX7219_CS    "MAX7219 CS"
 #define D_SENSOR_MAX7219_CLK    "MAX7219 CLK"

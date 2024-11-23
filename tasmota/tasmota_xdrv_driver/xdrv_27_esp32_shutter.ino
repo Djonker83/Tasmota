@@ -45,12 +45,6 @@
 #define D_ERROR_FILESYSTEM_NOT_READY "SHT: ERROR File system not enabled"
 #define D_ERROR_FILE_NOT_FOUND "SHT: ERROR File system not ready or file not found"
 
-const char HTTP_MSG_SLIDER_SHUTTER[] PROGMEM =
-  "<tr><td colspan=2>"
-  "<div><span class='p'>%s</span><span class='q'>%s</span></div>"
-  "<div><input type='range' min='0' max='100' value='%d' onchange='lc(\"u\",%d,value)'></div>"
-  "{e}";
-
 const uint16_t SHUTTER_VERSION = 0x0100;  // Latest driver version (See settings deltas below)
 
 typedef struct { // depreciated 2023-04-28
@@ -1161,14 +1155,6 @@ void ShutterSettingsSave(void) {
 #else
     AddLog(LOG_LEVEL_INFO, D_ERROR_FILESYSTEM_NOT_READY);
 #endif  // USE_UFILESYS
-  }
-}
-
-void ShutterShow()
-{
-  for (uint32_t i = 0; i < TasmotaGlobal.shutters_present; i++) {
-    WSContentSend_P(HTTP_MSG_SLIDER_SHUTTER,  (ShutterGetOptions(i) & 1) ? D_OPEN : D_CLOSE,(ShutterGetOptions(i) & 1) ? D_CLOSE : D_OPEN, (ShutterGetOptions(i) & 1) ? (100 - ShutterRealToPercentPosition(-9999, i)) : ShutterRealToPercentPosition(-9999, i), i+1);
-    WSContentSeparator(3); // Don't print separator on next WSContentSeparator(1)
   }
 }
 
@@ -2293,6 +2279,7 @@ bool Xdrv27(uint32_t function)
   if (Settings->flag3.shutter_mode) {  // SetOption80 - Enable shutter support
     uint8_t  counter         = XdrvMailbox.index == 0 ? 1 : XdrvMailbox.index;
     uint8_t  counterend      = XdrvMailbox.index == 0 ? TasmotaGlobal.shutters_present : XdrvMailbox.index;
+    uint32_t rescue_index    = XdrvMailbox.index;
     int32_t  rescue_payload  = XdrvMailbox.payload;
     uint32_t rescue_data_len = XdrvMailbox.data_len;
     char stemp1[10];
@@ -2323,7 +2310,7 @@ bool Xdrv27(uint32_t function)
           XdrvMailbox.index    = i;
           XdrvMailbox.payload  = rescue_payload;
           XdrvMailbox.data_len = rescue_data_len;
-	  if (!ShutterSettings.version) {
+          if (!ShutterSettings.version) {
             ShutterSettingsLoad(0);
             ShutterSettings.shutter_startrelay[0] = 1;
             ShutterInit();
@@ -2393,15 +2380,13 @@ bool Xdrv27(uint32_t function)
           result = false;
         }
       break;
-#ifdef USE_WEBSERVER
-      case FUNC_WEB_SENSOR:
-        ShutterShow();
-        break;
-#endif  // USE_WEBSERVER
       case FUNC_ACTIVE:
         result = true;
         break;
     }
+    XdrvMailbox.index = rescue_index;
+    XdrvMailbox.payload = rescue_payload;
+    XdrvMailbox.data_len = rescue_data_len;
   }
   return result;
 }

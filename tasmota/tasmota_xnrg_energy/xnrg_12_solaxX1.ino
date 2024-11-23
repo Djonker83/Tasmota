@@ -116,8 +116,7 @@ struct SOLAXX1_GLOBALDATA {
   bool AddressAssigned = true;
   uint8_t SendRetry_count = 20;
   uint8_t QueryData_count = 0;
-  uint8_t QueryID_count = 240;
-  bool Command_QueryID = false;;
+  bool Command_QueryID = false;
   bool Command_QueryConfig = false;
   bool MeterMode = false;
   float MeterPower = 5000;
@@ -198,35 +197,21 @@ void solaxX1_RS485SendRaw(uint8_t *SendBuffer, uint8_t DataLen, uint8_t CRCflag)
 }
 
 bool solaxX1_RS485Receive(uint8_t *ReadBuffer) {
-  uint32_t SerWatchdogTime;
-
-  // Read header
+  uint8_t SerAvial;
   uint8_t len = 0;
-  SerWatchdogTime = millis();
-  while (len < 2) { // read exact length because of unaccurate timing of the inverter
-    if (solaxX1Serial->available()) ReadBuffer[len++] = (uint8_t)solaxX1Serial->read();
-    if (millis() > (SerWatchdogTime + 1000)) return true; // No data received -> bail out
+
+  while (SerAvial = solaxX1Serial->available()) {
+    while (SerAvial--) {
+      ReadBuffer[len++] = (uint8_t)solaxX1Serial->read();
+    }
+    delay(10);  // wait for more data because of slowness of the inverter
   }
+  AddLogBuffer(LOG_LEVEL_DEBUG_MORE, ReadBuffer, len);
 
   // Check and set meter mode
   solaxX1_SwitchMeterMode((ReadBuffer[0] == 0x01 || ReadBuffer[0] == 0x02) && (ReadBuffer[1] == 0x03 || ReadBuffer[1] == 0x04));
+  if (solaxX1_global.MeterMode) return false; // Ignore checksum in metermode
 
-  // Read data in meter mode
-  if (solaxX1_global.MeterMode) { // Metermode
-    SerWatchdogTime = millis();
-    while (len < 8) { // read exact length because of unaccurate timing of the inverter
-      if (solaxX1Serial->available()) ReadBuffer[len++] = (uint8_t)solaxX1Serial->read();
-      if (millis() > (SerWatchdogTime + 1000)) return true; // No data received -> bail out
-    }
-    AddLogBuffer(LOG_LEVEL_DEBUG_MORE, ReadBuffer, len);
-    return false; // Ignore checksum  
-  } // end Metermode
-
-  // Process normal receive
-  while (solaxX1Serial->available()) {
-    ReadBuffer[len++] = (uint8_t)solaxX1Serial->read();
-  }
-  AddLogBuffer(LOG_LEVEL_DEBUG_MORE, ReadBuffer, len);
   uint16_t crc = solaxX1_calculateCRC(ReadBuffer, len - 2); // calculate out crc bytes
   return !(ReadBuffer[len - 1] == lowByte(crc) && ReadBuffer[len - 2] == highByte(crc));
 }
@@ -344,7 +329,7 @@ void solaxX1_SwitchMeterMode(bool MeterMode) {
 /*********************************************************************************************/
 
 void solaxX1_CyclicTask(void) { // Every 100/250 milliseconds
-  uint8_t DataRead[80] = {0};
+  uint8_t DataRead[256] = {0};
   uint8_t TempData[16] = {0};
   char TempDataChar[32];
   float TempFloat;
@@ -450,7 +435,7 @@ void solaxX1_CyclicTask(void) { // Every 100/250 milliseconds
         AddLog(LOG_LEVEL_INFO, PSTR("SX1: Inverter rated bus voltage: %s"),(char*)TempData);
         solaxX1_global.Command_QueryID = false;
       } else {
-        AddLog(LOG_LEVEL_DEBUG, PSTR("SX1: Inverter serial number: %s"),(char*)solaxX1.SerialNumber);
+        AddLog(LOG_LEVEL_INFO, PSTR("SX1: Inverter serial number: %s"),(char*)solaxX1.SerialNumber);
       }
       DEBUG_SENSOR_LOG(PSTR("SX1: received ID data"));
       return;
@@ -548,11 +533,11 @@ void solaxX1_CyclicTask(void) { // Every 100/250 milliseconds
     return;
   }
 
-//  DEBUG_SENSOR_LOG(PSTR("SX1: solaxX1_global.AddressAssigned: %d, solaxX1_global.QueryData_count: %d, solaxX1_global.SendRetry_count: %d, solaxX1_global.QueryID_count: %d"), solaxX1_global.AddressAssigned, solaxX1_global.QueryData_count, solaxX1_global.SendRetry_count, solaxX1_global.QueryID_count);
+//  DEBUG_SENSOR_LOG(PSTR("SX1: solaxX1_global.AddressAssigned: %d, solaxX1_global.QueryData_count: %d, solaxX1_global.SendRetry_count: %d"), solaxX1_global.AddressAssigned, solaxX1_global.QueryData_count, solaxX1_global.SendRetry_count);
   if (solaxX1_global.AddressAssigned) {
     if (!solaxX1_global.QueryData_count) { // normal periodically query
-      solaxX1_global.QueryData_count = 5;
-      if (!solaxX1_global.QueryID_count || solaxX1_global.Command_QueryID) { // ID query
+      solaxX1_global.QueryData_count = 3;
+      if (!solaxX1.SerialNumber[0] || solaxX1_global.Command_QueryID) { // ID query
         DEBUG_SENSOR_LOG(PSTR("SX1: Send ID query"));
         solaxX1_QueryIDData();
       } else if (solaxX1_global.Command_QueryConfig) { // Config query
@@ -562,7 +547,6 @@ void solaxX1_CyclicTask(void) { // Every 100/250 milliseconds
         DEBUG_SENSOR_LOG(PSTR("SX1: Send live query"));
         solaxX1_QueryLiveData();
       }
-      solaxX1_global.QueryID_count++; // query ID every 256th time
     }  // end normal periodically query
     solaxX1_global.QueryData_count--;
     if (!solaxX1_global.SendRetry_count) { // Inverter went "off"
@@ -587,7 +571,7 @@ return;
 
 void solaxX1_SnsInit(void) {
   AddLog(LOG_LEVEL_INFO, PSTR("SX1: Init - RX-pin: %d, TX-pin: %d, RTS-pin: %d"), Pin(GPIO_SOLAXX1_RX), Pin(GPIO_SOLAXX1_TX), Pin(GPIO_SOLAXX1_RTS));
-  solaxX1Serial = new TasmotaSerial(Pin(GPIO_SOLAXX1_RX), Pin(GPIO_SOLAXX1_TX), 1);
+  solaxX1Serial = new TasmotaSerial(Pin(GPIO_SOLAXX1_RX), Pin(GPIO_SOLAXX1_TX), 1, 0, 256);
   if (solaxX1Serial->begin(SOLAXX1_SPEED)) {
     if (solaxX1Serial->hardwareSerial()) { ClaimSerial(); }
 #ifdef ESP32
