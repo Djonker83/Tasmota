@@ -56,6 +56,7 @@
 #define D_AIR_QUALITY "공기질"
 #define D_AP "AP"                    // Access Point
 #define D_AS "as"
+#define D_AT "at"
 #define D_AUTO "자동"
 #define D_BATTERY "Battery"
 #define D_BATT "Batt"                // Short for Battery
@@ -573,8 +574,8 @@
 // xdrv_79_esp32_ble.ino
 #define D_CONFIGURE_BLE "Configure BLE"
 #define D_BLE_PARAMETERS "Bluetooth Settings"
-#define D_MQTT_BLE_ENABLE "Enable Bluetooth"
-#define D_MQTT_BLE_ACTIVESCAN "Enable Active Scan(*)"
+#define D_BLE_ENABLE "Enable Bluetooth"
+#define D_BLE_ACTIVESCAN "Enable Active Scan(*)"
 #define D_BLE_DEVICES "Devices Seen"
 #define D_BLE_REMARK "items marked (*) are not stored in config"
 
@@ -1010,6 +1011,10 @@
 #define D_SENSOR_ME007_RX      "ME007 Rx"
 #define D_SENSOR_TUYAMCUBR_TX  "TuyaMCUBr Tx"
 #define D_SENSOR_TUYAMCUBR_RX  "TuyaMCUBr Rx"
+#define D_SENSOR_TWAI_TX       "TWAI Tx"
+#define D_SENSOR_TWAI_RX       "TWAI Rx"
+#define D_SENSOR_TWAI_BO       "TWAI BusOff"
+#define D_SENSOR_TWAI_CLK      "TWAI ClkOut"
 #define D_SENSOR_BIOPDU_PZEM0XX_TX "BioPDU PZEM0XX Tx"
 #define D_SENSOR_BIOPDU_PZEM016_RX "BioPDU PZEM016 Rx"
 #define D_SENSOR_BIOPDU_BIT    "BioPDU Bit"
