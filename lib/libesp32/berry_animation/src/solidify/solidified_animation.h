@@ -3,8 +3,8 @@
 * Generated code, don't edit                                         *
 \********************************************************************/
 #include "be_constobj.h"
-// compact class 'BreatheAnimation' ktab size: 17, total: 21 (saved 32 bytes)
-static const bvalue be_ktab_class_BreatheAnimation[17] = {
+// compact class 'BreatheAnimation' ktab size: 18, total: 23 (saved 40 bytes)
+static const bvalue be_ktab_class_BreatheAnimation[18] = {
   /* K0   */  be_nested_str_weak(init),
   /* K1   */  be_nested_str_weak(breathe_provider),
   /* K2   */  be_nested_str_weak(animation),
@@ -16,12 +16,13 @@ static const bvalue be_ktab_class_BreatheAnimation[17] = {
   /* K8   */  be_nested_str_weak(time_ms),
   /* K9   */  be_nested_str_weak(on_param_changed),
   /* K10  */  be_nested_str_weak(int),
-  /* K11  */  be_nested_str_weak(base_color),
-  /* K12  */  be_nested_str_weak(min_brightness),
-  /* K13  */  be_nested_str_weak(max_brightness),
-  /* K14  */  be_nested_str_weak(period),
-  /* K15  */  be_nested_str_weak(duration),
-  /* K16  */  be_nested_str_weak(curve_factor),
+  /* K11  */  be_nested_str_weak(is_value_provider),
+  /* K12  */  be_nested_str_weak(base_color),
+  /* K13  */  be_nested_str_weak(min_brightness),
+  /* K14  */  be_nested_str_weak(max_brightness),
+  /* K15  */  be_nested_str_weak(period),
+  /* K16  */  be_nested_str_weak(duration),
+  /* K17  */  be_nested_str_weak(curve_factor),
 };
 
 
@@ -122,7 +123,7 @@ be_local_closure(class_BreatheAnimation_on_param_changed,   /* name */
     &be_ktab_class_BreatheAnimation,     /* shared constants */
     be_str_weak(on_param_changed),
     &be_const_str_solidified,
-    ( &(const binstruction[40]) {  /* code */
+    ( &(const binstruction[45]) {  /* code */
       0x600C0003,  //  0000  GETGBL	R3	G3
       0x5C100000,  //  0001  MOVE	R4	R0
       0x7C0C0200,  //  0002  CALL	R3	1
@@ -131,38 +132,43 @@ be_local_closure(class_BreatheAnimation_on_param_changed,   /* name */
       0x5C180400,  //  0005  MOVE	R6	R2
       0x7C0C0600,  //  0006  CALL	R3	3
       0x1C0C0305,  //  0007  EQ	R3	R1	K5
-      0x780E000A,  //  0008  JMPF	R3	#0014
+      0x780E000F,  //  0008  JMPF	R3	#0019
       0x600C0004,  //  0009  GETGBL	R3	G4
       0x5C100400,  //  000A  MOVE	R4	R2
       0x7C0C0200,  //  000B  CALL	R3	1
       0x1C0C070A,  //  000C  EQ	R3	R3	K10
-      0x780E0004,  //  000D  JMPF	R3	#0013
-      0x880C0101,  //  000E  GETMBR	R3	R0	K1
-      0x900E1602,  //  000F  SETMBR	R3	K11	R2
-      0x880C0104,  //  0010  GETMBR	R3	R0	K4
-      0x88100101,  //  0011  GETMBR	R4	R0	K1
-      0x980E0A04,  //  0012  SETIDX	R3	K5	R4
-      0x70020012,  //  0013  JMP		#0027
-      0x1C0C030C,  //  0014  EQ	R3	R1	K12
-      0x780E0002,  //  0015  JMPF	R3	#0019
-      0x880C0101,  //  0016  GETMBR	R3	R0	K1
-      0x900E1802,  //  0017  SETMBR	R3	K12	R2
-      0x7002000D,  //  0018  JMP		#0027
+      0x740E0004,  //  000D  JMPT	R3	#0013
+      0xB80E0400,  //  000E  GETNGBL	R3	K2
+      0x8C0C070B,  //  000F  GETMET	R3	R3	K11
+      0x5C140400,  //  0010  MOVE	R5	R2
+      0x7C0C0400,  //  0011  CALL	R3	2
+      0x780E0004,  //  0012  JMPF	R3	#0018
+      0x880C0101,  //  0013  GETMBR	R3	R0	K1
+      0x900E1802,  //  0014  SETMBR	R3	K12	R2
+      0x880C0104,  //  0015  GETMBR	R3	R0	K4
+      0x88100101,  //  0016  GETMBR	R4	R0	K1
+      0x980E0A04,  //  0017  SETIDX	R3	K5	R4
+      0x70020012,  //  0018  JMP		#002C
       0x1C0C030D,  //  0019  EQ	R3	R1	K13
       0x780E0002,  //  001A  JMPF	R3	#001E
       0x880C0101,  //  001B  GETMBR	R3	R0	K1
       0x900E1A02,  //  001C  SETMBR	R3	K13	R2
-      0x70020008,  //  001D  JMP		#0027
+      0x7002000D,  //  001D  JMP		#002C
       0x1C0C030E,  //  001E  EQ	R3	R1	K14
       0x780E0002,  //  001F  JMPF	R3	#0023
       0x880C0101,  //  0020  GETMBR	R3	R0	K1
-      0x900E1E02,  //  0021  SETMBR	R3	K15	R2
-      0x70020003,  //  0022  JMP		#0027
-      0x1C0C0310,  //  0023  EQ	R3	R1	K16
-      0x780E0001,  //  0024  JMPF	R3	#0027
+      0x900E1C02,  //  0021  SETMBR	R3	K14	R2
+      0x70020008,  //  0022  JMP		#002C
+      0x1C0C030F,  //  0023  EQ	R3	R1	K15
+      0x780E0002,  //  0024  JMPF	R3	#0028
       0x880C0101,  //  0025  GETMBR	R3	R0	K1
       0x900E2002,  //  0026  SETMBR	R3	K16	R2
-      0x80000000,  //  0027  RET	0
+      0x70020003,  //  0027  JMP		#002C
+      0x1C0C0311,  //  0028  EQ	R3	R1	K17
+      0x780E0001,  //  0029  JMPF	R3	#002C
+      0x880C0101,  //  002A  GETMBR	R3	R0	K1
+      0x900E2202,  //  002B  SETMBR	R3	K17	R2
+      0x80000000,  //  002C  RET	0
     })
   )
 );
